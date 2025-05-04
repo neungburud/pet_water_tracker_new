@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider extends ChangeNotifier {
   // การตั้งค่า MQTT
-  String _mqttServer = '8da9745f81c3401480e29580cdde0773.s1.eu.hivemq.cloud';
+  String _mqttServer = 'h970e2d4.ala.asia-southeast1.emqxsl.com';
   int _mqttPort = 8883;
   String _mqttUsername = 'neungburud';
   String _mqttPassword = '@Top140635';
@@ -16,6 +16,9 @@ class SettingsProvider extends ChangeNotifier {
 
   // การตั้งค่าการเก็บข้อมูล
   int _dataRetentionDays = 90;
+  
+  // การตั้งค่าธีม
+  ThemeMode _themeMode = ThemeMode.system;
 
   // Getters
   String get mqttServer => _mqttServer;
@@ -27,6 +30,7 @@ class SettingsProvider extends ChangeNotifier {
   bool get notifyWhenNotDrinking => _notifyWhenNotDrinking;
   bool get notifyWhenDisconnected => _notifyWhenDisconnected;
   int get dataRetentionDays => _dataRetentionDays;
+  ThemeMode get themeMode => _themeMode;
 
   // Constructor
   SettingsProvider() {
@@ -52,6 +56,10 @@ class SettingsProvider extends ChangeNotifier {
       
       // การตั้งค่าการเก็บข้อมูล
       _dataRetentionDays = prefs.getInt('data_retention_days') ?? _dataRetentionDays;
+      
+      // การตั้งค่าธีม
+      final themeModeIndex = prefs.getInt('theme_mode') ?? ThemeMode.system.index;
+      _themeMode = ThemeMode.values[themeModeIndex];
       
       notifyListeners();
     } catch (e) {
@@ -142,6 +150,20 @@ class SettingsProvider extends ChangeNotifier {
       debugPrint('เกิดข้อผิดพลาดในการบันทึกการตั้งค่าการเก็บข้อมูล: $e');
     }
   }
+  
+  // ตั้งค่าโหมดธีม
+  Future<void> setThemeMode(ThemeMode mode) async {
+    _themeMode = mode;
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('theme_mode', mode.index);
+      
+      notifyListeners();
+    } catch (e) {
+      debugPrint('เกิดข้อผิดพลาดในการบันทึกการตั้งค่าธีม: $e');
+    }
+  }
 
   // ล้างการตั้งค่าทั้งหมด
   Future<void> clearAllData() async {
@@ -152,11 +174,13 @@ class SettingsProvider extends ChangeNotifier {
       await prefs.remove('notify_when_drinking');
       await prefs.remove('notify_when_not_drinking');
       await prefs.remove('notify_when_disconnected');
+      await prefs.remove('theme_mode');
       
       _dataRetentionDays = 90;
       _notifyWhenDrinking = true;
       _notifyWhenNotDrinking = true;
       _notifyWhenDisconnected = true;
+      _themeMode = ThemeMode.system;
       
       notifyListeners();
     } catch (e) {

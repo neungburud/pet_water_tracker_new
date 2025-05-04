@@ -1,6 +1,6 @@
 class AppConfig {
   // การตั้งค่า MQTT เริ่มต้น (จากโค้ด ESP32)
-  static const String defaultMqttServer = '8da9745f81c3401480e29580cdde0773.s1.eu.hivemq.cloud';
+  static const String defaultMqttServer = 'h970e2d4.ala.asia-southeast1.emqxsl.com';
   static const int defaultMqttPort = 8883;
   static const String defaultMqttUsername = 'neungburud';
   static const String defaultMqttPassword = '@Top140635';

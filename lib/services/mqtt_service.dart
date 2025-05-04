@@ -45,7 +45,7 @@ class MqttService {
 
     // สร้าง MQTT Client
     _client = MqttServerClient.withPort(server, clientId, port);
-    _client!.logging(on: false);
+    _client!.logging(on: true);
     _client!.keepAlivePeriod = 60;
     _client!.onConnected = _onConnected;
     _client!.onDisconnected = _onDisconnected;
